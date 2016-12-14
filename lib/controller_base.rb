@@ -8,9 +8,10 @@ class ControllerBase
   attr_reader :req, :res, :params
 
   # Setup the controller
-  def initialize(req, res)
+  def initialize(req, res, params)
     @req = req
     @res = res
+    @params = params.merge(@req.params)
   end
 
   # Helper method to alias @already_built_response
@@ -65,5 +66,8 @@ class ControllerBase
 
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(name)
+    router = Router.new
+    router.send(name)
+    render(name) unless already_built_response?
   end
 end
